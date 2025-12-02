@@ -1,0 +1,60 @@
+#include <Servo.h>
+
+Servo garra;
+Servo brazo;
+
+void setup() {
+   Serial.begin(9600);
+  garra.attach(12);
+  brazo.attach(13);
+  delay(5000); //delay para acomodar todo xd
+  garra.write(80); // giro hacia afuera y queda pronta para agarrar
+  delay(500);     // 
+  garra.write(90); //al inicuar el programa hay que dejar la garra cerrada
+   delay(1000);
+   brazo.write(90);
+   delay(500);
+}
+
+void loop() {
+
+}
+
+void Levantar (){ //hay que cambiarle para que solo levante etc.
+   delay(2000);
+   garra.write(120); // giro hacia adentro para agarrar
+   delay(500);
+   brazo.write(90); //esperamos a que se cierre la garra
+   delay(500);
+   brazo.write(60); //sube hasta posición deseada, pot 60 durante 0,8 seg
+   delay(800);
+   garra.write(90); //esperamos a que el brazo suba 
+   delay(800);
+   garra.write(80); //giro hacia afuera y queda pronta para agarrar
+   delay(500);
+   garra.write(90);
+   brazo.write(120); // baja para agarrar de nuevo, pot 120 durante 0,6 seg
+   delay(600);
+}
+
+void BrazoSinConfig(){
+    brazo.write(60); //sube hasta posición deseada, pot 60 durante 0,8 seg
+   delay(800);
+   brazo.write(90); // espera de 1,5 seg
+   delay(1500);
+   brazo.write(120); // baja para agarrar de nuevo, pot 120 durante 0,6 seg
+   delay(600);
+   brazo.write(90); //espera de 1,5 seg
+   delay(1500);
+   }
+
+void GarraSinConfig () {
+     garra.write(90); // espera de 3 seg
+   delay(3000);
+   garra.write(120); // giro hacia adentro para agarrar
+   delay(500);
+   garra.write(90); //espera de 3 seg
+   delay(3000);
+   garra.write(80); //giro hacia afuera y queda pronta para agarrar
+   delay(500);
+}
