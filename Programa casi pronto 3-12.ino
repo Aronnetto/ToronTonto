@@ -1,10 +1,11 @@
 #include <Servo.h>
 
-const int sensorPin2 = 6; // Pin donde está conectado OUT del sensor
-const int ledPin = 13;   // LED incorporado del Arduino
+const int sensorLDR = 6; // Pin donde está conectado OUT del sensor
+const int ledPinR = 13;   // LED incorporado del Arduino
+const int ledPinA = 7;
 
 int sensorState;
-int sensorPin = 12; // Pin donde está conectado OUT del sensor pelota
+int sensorIR = 12; // Pin donde está conectado OUT del sensor pelota
 int valorSensorPelota = 0;
 int analog[] = {A0, A1, A2, A3, A4, A5, A6, A7};
 int D[8];
@@ -33,14 +34,16 @@ void setup() {
   pinMode(E1, INPUT);
   digitalWrite(T1, LOW);
   digitalWrite(E1, LOW);
-  pinMode(sensorPin2, INPUT);
-  pinMode(ledPin, OUTPUT);
-  digitalWrite(ledPin, LOW);
+  pinMode(sensorIR, INPUT);
+  pinMode(ledPinR, OUTPUT);
+  pinMode(ledPinA, OUTPUT);
+  digitalWrite(ledPinR, LOW);
+  digitalWrite(ledPinA, LOW);
   servoder.attach(4);
   servoizq.attach(5);
   garra.attach(9);
   brazo.attach(8);
-  pinMode(sensorPin, INPUT);
+  pinMode(sensorLDR, INPUT);
   servoder.write(0);
   servoizq.write(0);
   delay(3000);
@@ -79,24 +82,31 @@ void loop(){
    //Serial.println(error);
 
 
- sensorState = digitalRead(sensorPin2);
-  //Serial.println(dis);
-  valorSensorPelota = digitalRead(sensorPin);
-  if ((sensorState ==  0) && (tengoPelota == false)){
+  sensorState = digitalRead(sensorLDR);
+  valorSensorPelota = digitalRead(sensorIR);
+  if ((sensorState ==  0) && (tengoPelota == 0)){
     delay(150);
     parar();
     delay(1000);
     garra.write(100);
-    digitalWrite(ledPin, HIGH);
-
-    delay(1000);
-    valorSensorPelota = digitalRead(sensorPin);
-     if(valorSensorPelota == 0){
+    digitalWrite(ledPinR, HIGH);
+    delay(500);
+    int lecturaRoja = (analogRead(sensorLDR));
+    digitalWrite(ledPinR, LOW);
+    delay(500);
+    digitalWrite(ledPinA, HIGH);
+    int lecturaAzul = (analogRead(sensorLDR));
+    delay(500);
+    digitalWrite(ledPinA, LOW);
+    valorSensorPelota = digitalRead(sensorIR);
+    
+     if ((valorSensorPelota == 1 ) && (lecturaAzul > lecturaRoja)) {
       delay(1000);
       Levantar();
-      digitalWrite(ledPin, LOW);
+      digitalWrite(ledPinR, LOW);
+      digitalWrite(ledPinA, LOW);
      }
-     else{
+     else {
       tengoPelota = 1;
       Distancia();
      }
@@ -205,7 +215,8 @@ void tirarPrisma(){
       delay(500);
       adelante(20);
       delay(750);
-      digitalWrite(ledPin, LOW);
+      digitalWrite(ledPinR, LOW);
+      digitalWrite(ledPinA, LOW);
       Distancia();
     }
 
@@ -217,6 +228,9 @@ void Distancia() {
   digitalWrite(T1, HIGH);
   delayMicroseconds(10);
   digitalWrite(T1,LOW);
+  t = pulseIn(E1, HIGH);
+  dis = t/59;
+}
   t = pulseIn(E1, HIGH);
   dis = t/59;
 }
