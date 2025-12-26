@@ -45,7 +45,6 @@ void setup() {
   servoizq.attach(5);
   garra.attach(9);
   brazo.attach(8);
-  pinMode(sensorLDR, INPUT);
   servoder.write(0);
   servoizq.write(0);
   delay(3000);
